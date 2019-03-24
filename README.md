@@ -62,5 +62,5 @@ Run unit test for the project
 -	From Eclipse, right click on the project
 -	Select Run As-> Junit test
 
-There are 23 TCs developed for the project, after finish unit test, all TCs should be passed as below picture
+There are 23 TCs developed for the project.
 
