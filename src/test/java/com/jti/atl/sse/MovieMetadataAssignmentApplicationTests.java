@@ -123,7 +123,7 @@ public class MovieMetadataAssignmentApplicationTests {
 				MovieDTO.class);
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertTrue(result.getBody().getId() == 1);
+		assertFalse("FAILED - Expected id=1 - Actual id=" + result.getBody().getId(), result.getBody().getId() != 1);
 	}
 
 	@Test
@@ -142,20 +142,20 @@ public class MovieMetadataAssignmentApplicationTests {
 				MovieDTO.class);
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertTrue(result.getBody().getId() == 1);
+		assertFalse("FAILED - Expected id=1 - Actual id=" + result.getBody().getId() , result.getBody().getId() != 1);
 	}
 
 	@Test
 	public void TC_ADMIN_03_WhenLoggedAdminDELETEMovie_ThenSuccess() throws IllegalStateException, IOException {
 		URL url = new URL(host + "/movies/1");
 
-		assertFalse(adminPostMovie(1) == null);
+		assertFalse("FAILED - setup data for running test case", adminPostMovie(1) == null);
 
 		ResponseEntity<MovieDTO> result = adminRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
 				MovieDTO.class);
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertTrue(result.getBody().getId() == 1);
+		assertFalse("FAILED - Expected id=1 - Actual id=" + result.getBody().getId(), result.getBody().getId() != 1);
 	}
 
 	@Test
@@ -167,10 +167,11 @@ public class MovieMetadataAssignmentApplicationTests {
 		movieDto.addGenreDTO(new GenreDTO(2, "Animated"));
 
 		HttpEntity<MovieDTO> request = new HttpEntity<MovieDTO>(movieDto);
-		ResponseEntity<MovieDTO> result = userRestTemplate.exchange(url.toString(), HttpMethod.POST, request,
-				MovieDTO.class);
+		ResponseEntity<String> result = userRestTemplate.exchange(url.toString(), HttpMethod.POST, request,
+				String.class);
 
 		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertTrue(result.getBody().contains("Forbidden"));
 	}
 
 	@Test
@@ -183,20 +184,22 @@ public class MovieMetadataAssignmentApplicationTests {
 		movieDto.addGenreDTO(new GenreDTO(2, "Animated"));
 
 		HttpEntity<MovieDTO> request = new HttpEntity<MovieDTO>(movieDto);
-		ResponseEntity<MovieDTO> result = userRestTemplate.exchange(url.toString(), HttpMethod.PUT, request,
-				MovieDTO.class);
+		ResponseEntity<String> result = userRestTemplate.exchange(url.toString(), HttpMethod.PUT, request,
+				String.class);
 
 		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertTrue(result.getBody().contains("Forbidden"));
 	}
 
 	@Test
 	public void TC_ADMIN_06_WhenNotAdminDELETEMovie_ThenFailed() throws IllegalStateException, IOException {
 		URL url = new URL(host + "/movies/1");
 
-		ResponseEntity<MovieDTO> delete_response = userRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
-				MovieDTO.class);
+		ResponseEntity<String> result = userRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
+				String.class);
 
-		assertEquals(HttpStatus.FORBIDDEN, delete_response.getStatusCode());
+		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertTrue(result.getBody().contains("Forbidden"));
 	}
 
 	@Test
@@ -258,7 +261,7 @@ public class MovieMetadataAssignmentApplicationTests {
 				MovieScoreDTO.class);
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse("FAILED - Received id=" + result.getBody().getId() + " - Expected id=1", result.getBody().getId() != 1);
+		assertFalse("FAILED - Expected id=1 - Actual id=" + result.getBody().getId(), result.getBody().getId() != 1);
 	}
 
 	@Test
@@ -269,7 +272,7 @@ public class MovieMetadataAssignmentApplicationTests {
 				MovieScoreDTO.class);
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse("FAILED - Received id=" + result.getBody().getId() + " - Expected id=1", result.getBody().getId() != 1);
+		assertFalse("FAILED - Expected id=1 - Actual id=" + result.getBody().getId(), result.getBody().getId() != 1);
 	}
 	
 	@Test
@@ -279,20 +282,22 @@ public class MovieMetadataAssignmentApplicationTests {
 		MovieScoreDTO movieScoreDto = new MovieScoreDTO(1, 100, 1, 1496174306L);
 
 		HttpEntity<MovieScoreDTO> request = new HttpEntity<MovieScoreDTO>(movieScoreDto);
-		ResponseEntity<MovieScoreDTO> result = adminRestTemplate.exchange(url.toString(), HttpMethod.POST, request,
-				MovieScoreDTO.class);
+		ResponseEntity<String> result = adminRestTemplate.exchange(url.toString(), HttpMethod.POST, request,
+				String.class);
 
 		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertTrue(result.getBody().contains("Forbidden"));
 	}
 
 	@Test
 	public void TC_USER_04_WhenNotUserDELETEMovieScore_ThenFailed() throws IllegalStateException, IOException {
 		URL url = new URL(host + "/movies/10/scores/1");
 
-		ResponseEntity<MovieScoreDTO> result = adminRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
-				MovieScoreDTO.class);
+		ResponseEntity<String> result = adminRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
+				String.class);
 
 		assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+		assertTrue(result.getBody().contains("Forbidden"));
 	}
 	
 	@Test
@@ -302,20 +307,22 @@ public class MovieMetadataAssignmentApplicationTests {
 		MovieScoreDTO movieScoreDto = new MovieScoreDTO(1, 100, 1, 1496174306L);
 
 		HttpEntity<MovieScoreDTO> request = new HttpEntity<MovieScoreDTO>(movieScoreDto);
-		ResponseEntity<MovieScoreDTO> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.POST, request,
-				MovieScoreDTO.class);
+		ResponseEntity<String> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.POST, request,
+				String.class);
 
 		assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+		assertTrue(result.getBody().contains("Unauthorized"));
 	}
 
 	@Test
 	public void TC_USER_06_WhenNotUserDELETEMovieScore_ThenFailed() throws IllegalStateException, IOException {
 		URL url = new URL(host + "/movies/10/scores/1");
 
-		ResponseEntity<MovieScoreDTO> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
-				MovieScoreDTO.class);
+		ResponseEntity<String> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.DELETE, null,
+				String.class);
 
 		assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+		assertTrue(result.getBody().contains("Unauthorized"));
 	}
 
 	@Test
@@ -338,7 +345,7 @@ public class MovieMetadataAssignmentApplicationTests {
 				MovieDTO.class);
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse("FAILED - Received movie with id=" + result.getBody().getId(), result.getBody().getId() != 20);
+		assertFalse("FAILED - Expected id=20 - Actual id=" + result.getBody().getId(), result.getBody().getId() != 20);
 	}
 	
 	@Test
@@ -349,27 +356,29 @@ public class MovieMetadataAssignmentApplicationTests {
 				new ParameterizedTypeReference<List<MovieDTO>>() {});
 
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertFalse("FAILED - Received " + result.getBody().size() + " movies", result.getBody().size() != 3);
+		assertFalse("FAILED - Expected 3 movies - Actual " + result.getBody().size() + " movies", result.getBody().size() != 3);
 	}
 	
 	@Test
 	public void TC_GEN_03_WhenUnauthorizedUserGETMovieById_ThenFailed() throws IllegalStateException, IOException {
 		URL url = new URL(host + "/movies/20");
 
-		ResponseEntity<Object> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.GET, null,
-				Object.class);
+		ResponseEntity<String> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.GET, null,
+				String.class);
 
 		assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+		assertTrue(result.getBody().contains("Unauthorized"));
 	}
 	
 	@Test
 	public void TC_GEN_04_WhenUnauthorizedUserGETMovies_ThenFailed() throws IllegalStateException, IOException {
 		URL url = new URL(host + "/movies/20,21,22");
 
-		ResponseEntity<Object> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.GET, null,
-				Object.class);
+		ResponseEntity<String> result = unauthorizedUserRestTemplate.exchange(url.toString(), HttpMethod.GET, null,
+				String.class);
 
 		assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+		assertTrue(result.getBody().contains("Unauthorized"));
 	}
 	
 	@Test
