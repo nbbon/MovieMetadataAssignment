@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class MovieMetadataAssignmentApplicationTests {
 	int port;
 
 	@Before
-	public void setUp() throws MalformedURLException {
+	public void setUp() {
 		userRestTemplate = new TestRestTemplate("user", "password");
 		adminRestTemplate = new TestRestTemplate("admin", "admin");
 		unauthorizedUserRestTemplate = new TestRestTemplate("user", "WrongPassword");
